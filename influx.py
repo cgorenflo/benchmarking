@@ -6,4 +6,5 @@ import module_locator
 config = load_config(module_locator.module_path())
 
 with influxdb.connect(**config["webike.influx"]) as client:
-    client.query("SELECT * INTO benchmarks..webike FROM webike..webike_benchmarking where imei='0000'")
+    for imei in range(1000):
+        client.query("SELECT * INTO benchmarks..webike FROM webike..webike_benchmarking where imei='{imei}' group by imei".format(imei=str(imei).zfill(4)))
