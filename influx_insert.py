@@ -11,9 +11,9 @@ config = load_config(module_locator.module_path())
 def execute(output):
     measurement = config["webike.measurement"]
     imeis = [str(imei).zfill(4) for imei in range(1000)]
-    points = ({
-        "measurement":measurement,
+    points = ({"measurement":measurement,
         "tags":{"imei":imei},
+        "fields":{
         "accelx": 0.0,
         "accely": 0.0,
         "accelz": 0.0,
@@ -41,7 +41,7 @@ def execute(output):
         "phoneipaddress": '"1.1.1.1"',
         "proximity": 0,
         "tempbattery": 0.0,
-        "tempbox": 0.0} for imei in imeis)
+        "tempbox": 0.0}} for imei in imeis)
 
     start = time.perf_counter()
     client.write_points(points)
