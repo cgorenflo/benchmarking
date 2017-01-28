@@ -1,6 +1,6 @@
 import time
 
-from iss4e.db import influxdb
+from influxdb import InfluxDBClient
 from iss4e.util.config import load_config
 
 import module_locator
@@ -18,7 +18,7 @@ def execute(output, query, constraints):
         output.write(str(end - start) + "\n")
 
 
-with influxdb.connect(**config["webike.influx"]) as client:
+with InfluxDBClient.connect(**config["webike.influx"]) as client:
 
 
     measurement = config["webike.influx.measurement"]

@@ -9,9 +9,11 @@ config = load_config(module_locator.module_path())
 
 
 def execute(output):
-    measurement = config["webike.influx.measurement"]
+    measurement = config["webike.measurement"]
     imeis = [str(imei).zfill(4) for imei in range(1000)]
-    fields = {
+    points = ({
+        "measurement":measurement,
+        "tags":{"imei":imei},
         "accelx": 0.0,
         "accely": 0.0,
         "accelz": 0.0,
@@ -35,18 +37,14 @@ def execute(output):
         "magx": 0.0,
         "magy": 0.0,
         "magz": 0.0,
-        "phonebattstate": "false",
-        "phoneipaddress": "1.1.1.1",
+        "phonebattstate": '"false"',
+        "phoneipaddress": '"1.1.1.1"',
         "proximity": 0,
         "tempbattery": 0.0,
-        "tempbox": 0.0}
-    field_set = ','.join("{key}={value}".format(key=key, value=value) for key, value in fields.items())
+        "tempbox": 0.0} for imei in imeis)
 
-    insert = "\n".join(
-        "{measurement},imei={imei} {field_set}"
-            .format(measurement=measurement, imei=imei, field_set=field_set) for imei in imeis)
     start = time.perf_counter()
-    client.write(insert)
+    client.write_points(points)
     end = time.perf_counter()
     output.write(str(end - start) + "\n")
 
